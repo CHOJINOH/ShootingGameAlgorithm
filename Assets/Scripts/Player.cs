@@ -11,11 +11,13 @@ public class Player : MonoBehaviour
 
     public float speed;// Player's speed
     public float power;// Player's power
+    public int health;// Player's health
     public float maxShotDelay;// Delay between shots
     public float curShotDelay;// Current shot delay
 
     public GameObject bulletObjA;
     public GameObject bulletObjB;
+    public GameManager manager;
 
     Animator anim;
     int inputX;
@@ -116,6 +118,11 @@ public class Player : MonoBehaviour
                     isTouchLeft = true;
                     break;
             }
+        }
+        else if (collision.gameObject.tag == "Enemy"||collision.gameObject.tag=="EnemyBullet")
+        {
+            manager.RespawnPlayer();
+            gameObject.SetActive(false);
         }
     }
 

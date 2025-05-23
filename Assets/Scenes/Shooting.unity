@@ -226,6 +226,7 @@ MonoBehaviour:
   - {fileID: 2133146619}
   maxSpawnDelay: 2
   curSpawnDelay: 0
+  player: {fileID: 583346836}
 --- !u!4 &230112114
 Transform:
   m_ObjectHideFlags: 0
@@ -437,10 +438,12 @@ MonoBehaviour:
   isTouchLeft: 0
   speed: 3
   power: 1
+  health: 0
   maxShotDelay: 0.15
   curShotDelay: 0
   bulletObjA: {fileID: 7127076753490161031, guid: 3b335ba5307523c4488fb66dcfe409bf, type: 3}
   bulletObjB: {fileID: 5114892893701433814, guid: 982e2834e2412684f828f6c90ccacd51, type: 3}
+  manager: {fileID: 230112113}
 --- !u!61 &583346840
 BoxCollider2D:
   m_ObjectHideFlags: 0

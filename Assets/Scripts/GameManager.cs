@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public float maxSpawnDelay;
     public float curSpawnDelay;
 
+    public GameObject player;
     private void Update()
     {
         curSpawnDelay += Time.deltaTime;
@@ -32,6 +33,7 @@ public class GameManager : MonoBehaviour
 
         Rigidbody2D rigid = enemy.GetComponent<Rigidbody2D>();
         Enemy enemyLogic = enemy.GetComponent<Enemy>();
+        enemyLogic.player = player;
 
         if (randomSpawnPointIndex == 5 || randomSpawnPointIndex == 6)
         {
@@ -46,6 +48,19 @@ public class GameManager : MonoBehaviour
         else {
             rigid.linearVelocity = new Vector2(0, enemyLogic.speed*(-1));
         }//Frontspawn
+    }
+    public void RespawnPlayer()
+    {
+        Invoke("ResetPlayer", 1f);
+        
+    }
 
+    public void RespawnPlayerEX()
+    {
+        player.transform.position = new Vector3(0, -4, 0);
+        player.SetActive(true);
+        player.GetComponent<Player>().health = 3;
+        player.GetComponent<Player>().power = 1;
+        player.GetComponent<Player>().speed = 5;
     }
 }
