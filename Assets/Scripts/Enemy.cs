@@ -7,13 +7,10 @@ public class Enemy : MonoBehaviour
     public Sprite[] sprites;
 
     SpriteRenderer spriteRenderer;
-    Rigidbody2D rigid;
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        rigid = GetComponent<Rigidbody2D>();
-        rigid.linearVelocity = Vector2.down * speed;
     }
 
     private void OnHit(int dmg)
@@ -33,21 +30,21 @@ public class Enemy : MonoBehaviour
         spriteRenderer.sprite = sprites[0];
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.CompareTag("BorderBullet"))
+        if (other.CompareTag("BorderBullet"))
         {
             // 화면 밖으로 나간 탄환만 파괴
-            Destroy(collision.gameObject);
+            Destroy(gameObject);
         }
-        else if (collision.CompareTag("PlayerBullet"))
+        else if (other.CompareTag("PlayerBullet"))
         {
             // 데미지 적용
-            Bullet bullet = collision.GetComponent<Bullet>();
+            Bullet bullet = other.GetComponent<Bullet>();
             OnHit(bullet.dmg);
 
             // 적이 아니라 탄환만 파괴
-            Destroy(collision.gameObject);
+            Destroy(other.gameObject);
         }
     }
 }

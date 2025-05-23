@@ -24,6 +24,28 @@ public class GameManager : MonoBehaviour
     {
         int randomEnemyIndex = Random.Range(0, enemies.Length);
         int randomSpawnPointIndex = Random.Range(0, spawnPoints.Length);
-        GameObject enemy = Instantiate(enemies[randomEnemyIndex], spawnPoints[randomSpawnPointIndex].position, spawnPoints[randomSpawnPointIndex].rotation);
+
+        GameObject enemy = Instantiate(
+            enemies[randomEnemyIndex],
+            spawnPoints[randomSpawnPointIndex].position,
+            spawnPoints[randomSpawnPointIndex].rotation);
+
+        Rigidbody2D rigid = enemy.GetComponent<Rigidbody2D>();
+        Enemy enemyLogic = enemy.GetComponent<Enemy>();
+
+        if (randomSpawnPointIndex == 5 || randomSpawnPointIndex == 6)
+        {
+            enemy.transform.Rotate(Vector3.forward * 90);
+            rigid.linearVelocity = new Vector2(enemyLogic.speed, -1);
+        }//leftspawn
+        else if(randomSpawnPointIndex == 7 || randomSpawnPointIndex == 8)
+        {
+            enemy.transform.Rotate(Vector3.back*90);
+            rigid.linearVelocity = new Vector2(enemyLogic.speed*(-1), -1);
+        }//rightspawn
+        else {
+            rigid.linearVelocity = new Vector2(0, enemyLogic.speed*(-1));
+        }//Frontspawn
+
     }
 }
