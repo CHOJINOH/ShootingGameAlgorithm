@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,9 +13,9 @@ public class UIManager : MonoBehaviour
     private List<BulletData> savedSlots = new List<BulletData>();
     private List<BulletSlotUI> selectedSlots = new List<BulletSlotUI>();
     public BossPatternController bossController;
-
+    public TMP_Text selectedPatternLabel;
     private char currentSlotLetter = 'A';
-
+    public Button deleteButton;
     public int maxSlotCount = 6;
 
     public void ShowSlotPanel(BulletData data)
@@ -43,22 +44,36 @@ public void AddSlot(BulletData data)
         slotPanel.SetActive(false);
         editorPanel.SetActive(true);
     }
-    private void HandleSlotSelection(BulletSlotUI clickedSlot)
+    private void HandleSlotSelection(BulletSlotUI slot)
     {
-        if (clickedSlot.IsSelected())
+        if (slot == null) return;
+
+        if (slot.IsSelected())
         {
-            if (!selectedSlots.Contains(clickedSlot))
-                selectedSlots.Add(clickedSlot);
+            if (!selectedSlots.Contains(slot))
+                selectedSlots.Add(slot);
         }
         else
         {
-            selectedSlots.Remove(clickedSlot);
+            selectedSlots.Remove(slot);
         }
 
-        // 두 개 이상 선택 시 교배 버튼 활성화
-        breedButton.interactable = selectedSlots.Count == 2;
-    }
+        // 선택된 슬롯 1개일 때 TMP 텍스트 표시
+        if (selectedSlots.Count == 1)
+        {
+            var data = selectedSlots[0].GetData();
+            if (selectedPatternLabel != null)
+                selectedPatternLabel.text = $" 선택된 슬롯: {DescribePattern(data)}";
+        }
+        else
+        {
+            if (selectedPatternLabel != null)
+                selectedPatternLabel.text = "슬롯을 선택하세요.";
+        }
 
+        breedButton.interactable = (selectedSlots.Count == 2);
+        deleteButton.interactable = (selectedSlots.Count == 1);
+    }
     private BulletData CloneData(BulletData source)
     {
         return new BulletData
@@ -110,6 +125,9 @@ public void AddSlot(BulletData data)
         Destroy(slot.gameObject);
         breedButton.interactable = false;
     }
-
+    private string DescribePattern(BulletData data)
+    {
+        return $"[{data.patternName}]\n타입: {data.type}\n속도: {data.speed:F1}\n탄수: {data.bulletCount}\n간격: {data.interval:F2}"; ;
+    }
 
 }

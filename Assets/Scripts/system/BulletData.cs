@@ -10,6 +10,7 @@ public enum BulletType
 [System.Serializable]
 public class BulletData
 {
+    public string patternName = "Unnamed";
     public BulletType type = BulletType.None;
 
     public int bulletCount = 0;
