@@ -1,6 +1,11 @@
 using UnityEngine;
 
-public enum BulletType { None, Straight, Rotating }
+public enum BulletType
+{
+    None = 0,
+    Radial = 1, 
+    Fan = 2  
+}
 
 [System.Serializable]
 public class BulletData

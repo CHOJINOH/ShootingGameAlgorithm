@@ -2,40 +2,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ContainerUIManager : MonoBehaviour
+public class UIManager : MonoBehaviour
 {
-    public GameObject editorCanvas;     // BulletEditorUI Canvas
-    public GameObject containerCanvas;  // A/B 슬롯 Canvas
-
-    private BulletData currentData;
-
-    public GameObject slotContainer;          // 슬롯이 들어갈 부모 Panel
-    public GameObject bulletSlotPrefab;       // 슬롯 버튼 프리팹
+    public GameObject editorPanel;
+    public GameObject slotPanel;
+    public GameObject slotContainer;
+    public GameObject bulletSlotPrefab;
 
     private List<BulletData> savedSlots = new List<BulletData>();
     private char currentSlotLetter = 'A';
 
-
-    public void OpenContainer(BulletData data)
+    public void ShowSlotPanel(BulletData data)
     {
-        currentData = CloneData(data); // 복사해서 저장
-        editorCanvas.SetActive(false);
-        containerCanvas.SetActive(true);
+        editorPanel.SetActive(false);
+        slotPanel.SetActive(true);
+        AddSlot(data);
     }
 
     public void AddSlot(BulletData data)
     {
-        // 데이터 저장
         BulletData copied = CloneData(data);
         savedSlots.Add(copied);
 
-        // 슬롯 버튼 생성
         GameObject slotObj = Instantiate(bulletSlotPrefab, slotContainer.transform);
         var slot = slotObj.GetComponent<BulletSlotUI>();
-        slot.Setup(copied, $"Slot {currentSlotLetter}");
-
-        currentSlotLetter++;
+        slot.Setup(copied, $"Slot {currentSlotLetter++}");
     }
+    public void ShowEditorPanel()
+    {
+        slotPanel.SetActive(false);
+        editorPanel.SetActive(true);
+    }
+
     private BulletData CloneData(BulletData source)
     {
         return new BulletData

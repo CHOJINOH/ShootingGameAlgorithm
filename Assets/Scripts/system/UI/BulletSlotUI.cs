@@ -15,7 +15,7 @@ public class BulletSlotUI : MonoBehaviour
 
     public void OnClick()
     {
-        Debug.Log($"🔍 {slotLabel.text} 클릭됨: {JsonUtility.ToJson(data, true)}");
-        // 나중에 교배 대상 선택 등으로 확장 가능
+        Debug.Log($" 슬롯 클릭됨: {slotLabel.text}");
+        Debug.Log(JsonUtility.ToJson(data, true));
     }
 }
