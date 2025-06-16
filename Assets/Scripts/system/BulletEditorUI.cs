@@ -66,7 +66,7 @@ public class BulletEditorUI : MonoBehaviour
                 intervalInput.text = "0.4";
                 durationInput.text = "3";
                 spreadAngleInput.text = "360";
-                rotationPerShotInput.text = "5"; // 회전 탄막처럼
+                rotationPerShotInput.text = "5"; // 회전 탄막
                 break;
 
             case BulletType.Fan: // 부채꼴
