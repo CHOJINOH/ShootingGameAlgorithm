@@ -53,10 +53,12 @@ public class UIManager : MonoBehaviour
             if (data != null)
             {
                 PatternManager.Instance.sharedPatterns.Add(data);
-                Debug.Log($"✅ Pattern 저장됨: {data.patternName}");
             }
         }
+
+        Debug.Log($"📦 Export 완료: {PatternManager.Instance.sharedPatterns.Count}개 패턴");
     }
+
 
 
     public void ShowEditorPanel()
@@ -142,6 +144,7 @@ public class UIManager : MonoBehaviour
 
         var slot = selectedSlots[0];
         selectedSlots.Clear();
+        allSlots.Remove(slot);
         Destroy(slot.gameObject);
         breedButton.interactable = false;
     }

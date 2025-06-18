@@ -3,14 +3,16 @@ using TMPro;
 
 public class BulletEditorUI : MonoBehaviour
 {
-
     public TMP_Dropdown typeDropdown;
+    public TMP_Dropdown shapeDropdown;
+
     public TMP_InputField bulletCountInput;
     public TMP_InputField speedInput;
     public TMP_InputField intervalInput;
     public TMP_InputField durationInput;
     public TMP_InputField spreadAngleInput;
     public TMP_InputField rotationPerShotInput;
+
     public UIManager uiManager;
     public BulletSpawn bulletSpawn;
 
@@ -19,6 +21,10 @@ public class BulletEditorUI : MonoBehaviour
     private void Start()
     {
         typeDropdown.onValueChanged.AddListener(OnTypeChanged);
+        shapeDropdown.onValueChanged.AddListener(OnShapeChanged);
+
+        // 초기 모양 값 적용
+        ApplyShapeDefaults((BulletShape)shapeDropdown.value);
     }
 
     public void ApplyInput()
@@ -30,27 +36,24 @@ public class BulletEditorUI : MonoBehaviour
             CurrentData.interval = float.Parse(intervalInput.text);
             CurrentData.duration = float.Parse(durationInput.text);
             CurrentData.spreadAngle = float.Parse(spreadAngleInput.text);
-            CurrentData.type = (BulletType)typeDropdown.value;
             CurrentData.rotationPerShot = float.Parse(rotationPerShotInput.text);
+
             CurrentData.type = (BulletType)typeDropdown.value;
+            CurrentData.shape = (BulletShape)shapeDropdown.value;
+
+            // 💡 모양에 따른 추가 속성은 내부에서 기본값 자동 할당
+            ApplyShapeDefaults(CurrentData.shape);
 
             Debug.Log("BulletData 적용됨:\n" + JsonUtility.ToJson(CurrentData, true));
 
             bulletSpawn.FirePattern(CurrentData);
-
             uiManager.ShowSlotPanel(CurrentData);
-            if (PatternManager.Instance != null)
-            {
-                PatternManager.Instance.sharedPatterns.Clear(); // 기존꺼 지우고
-                PatternManager.Instance.sharedPatterns.Add(CurrentData); // 이 패턴 저장
-            }
         }
         catch
         {
-            Debug.LogError("잘못된 입력입니다");
+            Debug.LogError("❌ 잘못된 입력입니다");
         }
     }
-
 
     private void OnTypeChanged(int selectedIndex)
     {
@@ -64,17 +67,15 @@ public class BulletEditorUI : MonoBehaviour
                 spreadAngleInput.text = "0";
                 rotationPerShotInput.text = "0";
                 break;
-
-            case BulletType.Radial: // 원형
+            case BulletType.Radial:
                 bulletCountInput.text = "12";
                 speedInput.text = "3";
                 intervalInput.text = "0.4";
                 durationInput.text = "3";
                 spreadAngleInput.text = "360";
-                rotationPerShotInput.text = "5"; // 회전 탄막
+                rotationPerShotInput.text = "5";
                 break;
-
-            case BulletType.Fan: // 부채꼴
+            case BulletType.Fan:
                 bulletCountInput.text = "5";
                 speedInput.text = "3.5";
                 intervalInput.text = "0.35";
@@ -85,4 +86,29 @@ public class BulletEditorUI : MonoBehaviour
         }
     }
 
+    private void OnShapeChanged(int selectedIndex)
+    {
+        ApplyShapeDefaults((BulletShape)selectedIndex);
+    }
+
+    // 🔹 모양에 따른 내부 속성 기본값 자동 지정
+    private void ApplyShapeDefaults(BulletShape shape)
+    {
+        switch (shape)
+        {
+            case BulletShape.Spiral:
+                CurrentData.spiralSpeed = 10f;
+                break;
+            case BulletShape.Wave:
+                CurrentData.waveAmplitude = 1f;
+                CurrentData.waveFrequency = 5f;
+                break;
+            case BulletShape.Radial:
+            default:
+                CurrentData.spiralSpeed = 0f;
+                CurrentData.waveAmplitude = 0f;
+                CurrentData.waveFrequency = 0f;
+                break;
+        }
+    }
 }

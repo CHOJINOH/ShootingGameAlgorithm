@@ -166,3 +166,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dmg: 3
+  originData:
+    patternName: Unnamed
+    type: 0
+    bulletCount: 0
+    speed: 0
+    interval: 0
+    duration: 0
+    spreadAngle: 0
+    rotationPerShot: 0
+    shape: 0
+    spiralSpeed: 0
+    waveAmplitude: 0
+    waveFrequency: 0
+  isFromBoss: 0

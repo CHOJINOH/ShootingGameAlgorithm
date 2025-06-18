@@ -100,6 +100,7 @@ public class GameManager : MonoBehaviour
     }
     public void RetryGame()
     {
+        PatternManager.Instance?.RemoveAllEvoPatterns();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name); // 현재 씬 재시작
     }
 }
