@@ -14,6 +14,7 @@ public class SceneLoader : MonoBehaviour
 
     public void LoadShootingScene()
     {
+        FindAnyObjectByType<UIManager>().ExportSlotsToPatternManager();
         SceneManager.LoadScene("03Shooting");
     }
 

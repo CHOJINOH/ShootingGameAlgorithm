@@ -38,6 +38,22 @@ public class BulletSpawn : MonoBehaviour
 
     private void FireBullets(BulletData data, float baseRotation)
     {
+        switch (data.shape)
+        {
+            case BulletShape.Spiral:
+                FireSpiral(data, baseRotation);
+                break;
+            case BulletShape.Wave:
+                FireWave(data);
+                break;
+            default:
+                FireRadial(data, baseRotation);
+                break;
+        }
+    }
+
+    private void FireRadial(BulletData data, float baseRotation)
+    {
         float angleStep = data.spreadAngle / Mathf.Max(data.bulletCount - 1, 1);
         float startAngle = -data.spreadAngle / 2f;
 
@@ -45,20 +61,41 @@ public class BulletSpawn : MonoBehaviour
         {
             float angle = baseRotation + startAngle + i * angleStep;
             Vector3 dir = Quaternion.Euler(0, 0, angle) * Vector3.down;
-            GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-
-            // 💡 탄환 방향 설정
-            var rb = bullet.GetComponent<Rigidbody2D>();
-            if (rb != null)
-                rb.linearVelocity = dir.normalized * data.speed;
-
-            // 💡 보스 탄환 정보 설정
-            var bulletComp = bullet.GetComponent<Bullet>();
-            if (bulletComp != null)
-            {
-                bulletComp.originData = data;
-                bulletComp.isFromBoss = true;
-            }
+            FireOneBullet(data, dir);
         }
+    }
+
+    private void FireSpiral(BulletData data, float baseRotation)
+    {
+        float angle = baseRotation + data.spiralSpeed;
+        Vector3 dir = Quaternion.Euler(0, 0, angle) * Vector3.down;
+        FireOneBullet(data, dir);
+    }
+
+    private void FireWave(BulletData data)
+    {
+        for (int i = 0; i < data.bulletCount; i++)
+        {
+            Vector3 dir = Vector3.down;
+            Vector3 waveOffset = Vector3.right * Mathf.Sin(Time.time * data.waveFrequency + i) * data.waveAmplitude;
+            FireOneBullet(data, dir + waveOffset.normalized);
+        }
+    }
+
+    private void FireOneBullet(BulletData data, Vector3 dir)
+    {
+        GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+        var rb = bullet.GetComponent<Rigidbody2D>();
+        if (rb != null)
+            rb.linearVelocity = dir.normalized * data.speed;
+
+        var bulletComp = bullet.GetComponent<Bullet>();
+        if (bulletComp != null)
+        {
+            bulletComp.originData = data;
+            bulletComp.isFromBoss = true;
+        }
+
+        FitnessManager.Instance?.RegisterFire(data);
     }
 }

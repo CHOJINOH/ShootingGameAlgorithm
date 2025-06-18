@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public GameObject[] enemies;
@@ -17,19 +17,25 @@ public class GameManager : MonoBehaviour
     public GameObject bossPrefab;
     private GameObject bossInstance;
 
+    public GameObject retryButton;
 
-
+    private void Start()
+    {
+        if (retryButton != null)
+            retryButton.SetActive(false);
+    }
     private void Update()
     {
-        if (bossSpawned) return;
-
-        curSpawnDelay += Time.deltaTime;
-
-        if (curSpawnDelay >= maxSpawnDelay)
+        if (!bossSpawned)
         {
-            SpawnEnemy();
-            maxSpawnDelay = Random.Range(1f, 5f); // Randomize the spawn delay for the next enemy
-            curSpawnDelay = 0f;
+            curSpawnDelay += Time.deltaTime;
+
+            if (curSpawnDelay >= maxSpawnDelay)
+            {
+                SpawnEnemy();
+                maxSpawnDelay = Random.Range(1f, 5f);
+                curSpawnDelay = 0f;
+            }
         }
     }
 
@@ -92,5 +98,9 @@ public class GameManager : MonoBehaviour
     {
         bossInstance = Instantiate(bossPrefab, new Vector3(0, 4, 0), Quaternion.identity);
     }
-
+    public void RetryGame()
+    {
+        PatternManager.Instance?.RemoveAllEvoPatterns();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // 현재 씬 재시작
+    }
 }
