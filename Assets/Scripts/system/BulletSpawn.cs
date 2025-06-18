@@ -44,12 +44,20 @@ public class BulletSpawn : MonoBehaviour
         for (int i = 0; i < data.bulletCount; i++)
         {
             float angle = baseRotation + startAngle + i * angleStep;
-            Vector3 dir = Quaternion.Euler(0, 0, angle) * Vector3.down; // 기본 방향: 아래로
+            Vector3 dir = Quaternion.Euler(0, 0, angle) * Vector3.down;
             GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+
+            // 💡 탄환 방향 설정
             var rb = bullet.GetComponent<Rigidbody2D>();
             if (rb != null)
-            {
                 rb.linearVelocity = dir.normalized * data.speed;
+
+            // 💡 보스 탄환 정보 설정
+            var bulletComp = bullet.GetComponent<Bullet>();
+            if (bulletComp != null)
+            {
+                bulletComp.originData = data;
+                bulletComp.isFromBoss = true;
             }
         }
     }

@@ -11,16 +11,18 @@ public class GameManager : MonoBehaviour
     public GameObject player;
 
     private int killCount = 0;
-    public int bossSummonThreshold = 4; // 예: 4마리 처치 시 보스 소환
+    public int bossSummonThreshold = 4; 
     private bool bossSpawned = false;
 
-    public GameObject bossPrefab; // 에디터에서 할당하거나 Resources에서 로드
+    public GameObject bossPrefab;
     private GameObject bossInstance;
 
 
 
     private void Update()
     {
+        if (bossSpawned) return;
+
         curSpawnDelay += Time.deltaTime;
 
         if (curSpawnDelay >= maxSpawnDelay)
@@ -89,7 +91,6 @@ public class GameManager : MonoBehaviour
     private void SpawnBoss()
     {
         bossInstance = Instantiate(bossPrefab, new Vector3(0, 4, 0), Quaternion.identity);
-        Debug.Log("보스 소환 완료 (자동 패턴 실행 중)");
     }
 
 }
