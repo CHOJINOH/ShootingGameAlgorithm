@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public GameObject[] enemies;
@@ -9,15 +9,33 @@ public class GameManager : MonoBehaviour
     public float curSpawnDelay;
 
     public GameObject player;
+
+    private int killCount = 0;
+    public int bossSummonThreshold = 4; 
+    private bool bossSpawned = false;
+
+    public GameObject bossPrefab;
+    private GameObject bossInstance;
+
+    public GameObject retryButton;
+
+    private void Start()
+    {
+        if (retryButton != null)
+            retryButton.SetActive(false);
+    }
     private void Update()
     {
-        curSpawnDelay += Time.deltaTime;
-
-        if (curSpawnDelay >= maxSpawnDelay)
+        if (!bossSpawned)
         {
-            SpawnEnemy();
-            maxSpawnDelay = Random.Range(1f, 5f); // Randomize the spawn delay for the next enemy
-            curSpawnDelay = 0f;
+            curSpawnDelay += Time.deltaTime;
+
+            if (curSpawnDelay >= maxSpawnDelay)
+            {
+                SpawnEnemy();
+                maxSpawnDelay = Random.Range(1f, 5f);
+                curSpawnDelay = 0f;
+            }
         }
     }
 
@@ -62,5 +80,27 @@ public class GameManager : MonoBehaviour
         player.GetComponent<Player>().health = 3;
         player.GetComponent<Player>().power = 1;
         player.GetComponent<Player>().speed = 5;
+    }
+
+    public void OnEnemyKilled()
+    {
+        killCount++;
+        Debug.Log($"적 처치됨! 현재 킬 수: {killCount}");
+
+        if (!bossSpawned && killCount >= bossSummonThreshold)
+        {
+            bossSpawned = true;
+            SpawnBoss();
+        }
+    }
+
+    private void SpawnBoss()
+    {
+        bossInstance = Instantiate(bossPrefab, new Vector3(0, 4, 0), Quaternion.identity);
+    }
+    public void RetryGame()
+    {
+        PatternManager.Instance?.RemoveAllEvoPatterns();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // 현재 씬 재시작
     }
 }

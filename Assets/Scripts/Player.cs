@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
@@ -18,6 +19,7 @@ public class Player : MonoBehaviour
     public GameObject bulletObjA;
     public GameObject bulletObjB;
     public GameManager manager;
+    private List<BulletSlotUI> allSlots = new(); // 전체 슬롯 추적
 
     Animator anim;
     int inputX;
@@ -119,11 +121,15 @@ public class Player : MonoBehaviour
                     break;
             }
         }
-        else if (collision.gameObject.tag == "Enemy"||collision.gameObject.tag=="EnemyBullet")
+        else if (collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "EnemyBullet")
         {
             manager.RespawnPlayer();
             gameObject.SetActive(false);
+
+            if (manager.retryButton != null)
+                manager.retryButton.SetActive(true);
         }
+
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -147,4 +153,5 @@ public class Player : MonoBehaviour
             }
         }
     }
+
 }
