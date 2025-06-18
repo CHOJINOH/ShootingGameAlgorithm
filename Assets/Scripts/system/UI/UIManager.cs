@@ -12,12 +12,13 @@ public class UIManager : MonoBehaviour
     public Button breedButton;
     private List<BulletData> savedSlots = new List<BulletData>();
     private List<BulletSlotUI> selectedSlots = new List<BulletSlotUI>();
+    private List<BulletSlotUI> allSlots = new(); // 전체 슬롯 추적
     public BossPatternController bossController;
     public TMP_Text selectedPatternLabel;
     private char currentSlotLetter = 'A';
     public Button deleteButton;
     public int maxSlotCount = 6;
-
+    
     public void ShowSlotPanel(BulletData data)
     {
         editorPanel.SetActive(false);
@@ -25,19 +26,38 @@ public class UIManager : MonoBehaviour
         AddSlot(data);
     }
 
-public void AddSlot(BulletData data)
-{
-    if (slotContainer.transform.childCount >= maxSlotCount)
+    public void AddSlot(BulletData data)
     {
-        Debug.LogWarning("슬롯 최대 개수 초과!");
-        return;
+        if (slotContainer.transform.childCount >= maxSlotCount)
+        {
+            Debug.LogWarning("슬롯 최대 개수 초과!");
+            return;
+        }
+
+        GameObject slotObj = Instantiate(bulletSlotPrefab, slotContainer.transform);
+        var slot = slotObj.GetComponent<BulletSlotUI>();
+        slot.Setup(data, $"Slot {currentSlotLetter++}");
+        slot.OnSlotSelected = HandleSlotSelection;
+
+        allSlots.Add(slot); // 💡 리스트에 추가!
+    }
+    public void ExportSlotsToPatternManager()
+    {
+        if (PatternManager.Instance == null) return;
+
+        PatternManager.Instance.sharedPatterns.Clear();
+
+        foreach (var slot in allSlots)
+        {
+            var data = slot.GetData();
+            if (data != null)
+            {
+                PatternManager.Instance.sharedPatterns.Add(data);
+                Debug.Log($"✅ Pattern 저장됨: {data.patternName}");
+            }
+        }
     }
 
-    GameObject slotObj = Instantiate(bulletSlotPrefab, slotContainer.transform);
-    var slot = slotObj.GetComponent<BulletSlotUI>();
-    slot.Setup(data, $"Slot {currentSlotLetter++}");
-    slot.OnSlotSelected = HandleSlotSelection;
-}
 
     public void ShowEditorPanel()
     {

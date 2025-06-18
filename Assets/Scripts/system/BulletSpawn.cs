@@ -59,6 +59,7 @@ public class BulletSpawn : MonoBehaviour
                 bulletComp.originData = data;
                 bulletComp.isFromBoss = true;
             }
+            FitnessManager.Instance?.RegisterFire(data);
         }
     }
 }

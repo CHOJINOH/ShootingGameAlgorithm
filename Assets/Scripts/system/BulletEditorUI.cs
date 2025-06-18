@@ -38,7 +38,12 @@ public class BulletEditorUI : MonoBehaviour
 
             bulletSpawn.FirePattern(CurrentData);
 
-            uiManager.ShowSlotPanel(CurrentData); 
+            uiManager.ShowSlotPanel(CurrentData);
+            if (PatternManager.Instance != null)
+            {
+                PatternManager.Instance.sharedPatterns.Clear(); // 기존꺼 지우고
+                PatternManager.Instance.sharedPatterns.Add(CurrentData); // 이 패턴 저장
+            }
         }
         catch
         {
