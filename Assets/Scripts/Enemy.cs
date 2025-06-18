@@ -17,6 +17,9 @@ public class Enemy : MonoBehaviour
 
     SpriteRenderer spriteRenderer;
 
+
+
+
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -69,6 +72,7 @@ public class Enemy : MonoBehaviour
 
         if (health <= 0)
         {
+            FindAnyObjectByType<GameManager>()?.OnEnemyKilled();
             Destroy(gameObject);
         }
     }

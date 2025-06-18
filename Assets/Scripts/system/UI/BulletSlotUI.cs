@@ -15,7 +15,8 @@ public class BulletSlotUI : MonoBehaviour
     {
         data = bulletData;
         slotLabel.text = slotName;
-        Deselect();
+        data.patternName = slotName; 
+        Deselect(); 
     }
 
     public void OnClick()
