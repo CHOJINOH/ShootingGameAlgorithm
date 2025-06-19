@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor.ShaderGraph.Internal;
+#if UNITY_EDITOR
+using UnityEditor.ShaderGraph;
+#endif
 using UnityEngine;
 
 public class Player : MonoBehaviour
